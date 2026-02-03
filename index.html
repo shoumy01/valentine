@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Question</title>
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #ffe4e1; font-family: 'Arial', sans-serif; }
+        .container { text-align: center; padding: 20px; }
+        img { width: 250px; border-radius: 15px; margin-bottom: 20px; }
+        .buttons { display: flex; justify-content: center; align-items: center; gap: 15px; }
+        button { border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; font-weight: bold; }
+        #yes-btn { background-color: #4CAF50; color: white; padding: 15px 30px; font-size: 18px; }
+        #no-btn { background-color: #f44336; color: white; padding: 10px 20px; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="main-container">
+    <img id="display-img" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueG56Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/vO8F4fYK3veKw/giphy.gif" alt="Minion">
+    <h1 id="question">Will you be my Valentine?</h1>
+    <div class="buttons">
+        <button id="yes-btn">Yes</button>
+        <button id="no-btn">No</button>
+    </div>
+</div>
+
+<script>
+    const yesBtn = document.getElementById('yes-btn');
+    const noBtn = document.getElementById('no-btn');
+    const img = document.getElementById('display-img');
+    const formUrl = "https://formspree.io/f/xzdvlynl"; // PASTE YOUR LINK HERE
+
+    let noCount = 0;
+    const phrases = ["No", "Are you sure?", "Really sure??", "Think again!", "Last chance!", "Surely not?", "You're breaking my heart ;(", "Wrong Choice", "How are still picking the wrong answer??"];
+
+    async function sendData(status) {
+        if (formUrl === "YOUR_FORMSPREE_URL_HERE") return;
+        await fetch(formUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ event: status, attempts: noCount })
+        });
+    }
+
+    // Track when they open the page
+    window.onload = () => sendData("Page Opened");
+
+    noBtn.addEventListener('click', () => {
+        noCount++;
+        noBtn.innerText = phrases[Math.min(noCount, phrases.length - 1)];
+        
+        // Make the Yes button grow
+        const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+        yesBtn.style.fontSize = (currentSize * 1.4) + "px";
+        yesBtn.style.padding = (currentSize * 0.8) + "px";
+    });
+
+    yesBtn.addEventListener('click', () => {
+        sendData("SAID YES!");
+        document.getElementById('main-container').innerHTML = `
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueG56Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l41lTfuxV5R7g6yT6/giphy.gif">
+            <h1>YAYYY!!! See you then! ❤️</h1>
+        `;
+    });
+</script>
+</body>
+</html>
