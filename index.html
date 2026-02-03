@@ -13,7 +13,7 @@
             margin: 0; 
             background-color: #ffe4e1; 
             font-family: 'Arial', sans-serif; 
-            overflow: hidden; /* This is important to hide scrollbars as photos fall */
+            overflow: hidden; /* Keeps photos from creating scrollbars */
         }
         .container { text-align: center; padding: 20px; position: relative; z-index: 10; }
         img.main-gif { width: 250px; border-radius: 15px; margin-bottom: 20px; }
@@ -22,22 +22,19 @@
         #yes-btn { background-color: #4CAF50; color: white; padding: 15px 30px; font-size: 18px; }
         #no-btn { background-color: #f44336; color: white; padding: 10px 20px; font-size: 16px; }
 
-        /* Animation for falling photos */
+        /* The falling animation for your photos */
         .falling-photo {
             position: absolute;
             top: -150px;
-            width: 100px; /* Adjust photo size here */
+            width: 100px; 
             border-radius: 10px;
             pointer-events: none;
             z-index: 5;
             animation: fall linear forwards;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         @keyframes fall {
-            to {
-                transform: translateY(120vh) rotate(360deg);
-            }
+            to { transform: translateY(120vh) rotate(360deg); }
         }
     </style>
 </head>
@@ -55,18 +52,15 @@
 <script>
     const yesBtn = document.getElementById('yes-btn');
     const noBtn = document.getElementById('no-btn');
-    const img = document.getElementById('display-img');
     const formUrl = "https://formspree.io/f/xzdvlynl"; 
 
     let noCount = 0;
     const phrases = ["No", "Are you sure?", "Really sure??", "Think again!", "Last chance!", "Surely not?", "You're breaking my heart ;(", "Wrong Choice", "How are still picking the wrong answer??"];
 
-    // NAMES OF YOUR PHOTOS
-    // Ensure these 4 files are uploaded to your GitHub repository
+    // This matches the exact names in your GitHub folder
     const fallingImages = ["photo1.png", "photo2.png", "photo3.png", "photo4.png"];
 
     async function sendData(status) {
-        if (formUrl === "YOUR_FORMSPREE_URL_HERE") return;
         await fetch(formUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -79,16 +73,11 @@
             const photo = document.createElement('img');
             photo.src = fallingImages[Math.floor(Math.random() * fallingImages.length)];
             photo.classList.add('falling-photo');
-            
-            // Randomly position horizontally and randomize speed
             photo.style.left = Math.random() * 100 + "vw";
             photo.style.animationDuration = (Math.random() * 2 + 3) + "s"; 
-            
             document.body.appendChild(photo);
-
-            // Cleanup photos after they finish falling
             setTimeout(() => { photo.remove(); }, 5000);
-        }, 300); // New photo falls every 0.3 seconds
+        }, 300);
     }
 
     window.onload = () => sendData("Page Opened");
@@ -103,10 +92,9 @@
 
     yesBtn.addEventListener('click', () => {
         sendData("SAID YES!");
-        startRain(); // Trigger the photos falling!
-        
+        startRain(); // This starts the photo rain!
         document.getElementById('main-container').innerHTML = `
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueG56Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l41lTfuxV5R7g6yT6/giphy.gif" class="main-gif">
+            <img src="https://media.giphy.com/media/l41lTfuxV5R7g6yT6/giphy.gif" class="main-gif">
             <h1>YAYYY!!! See you then! ❤️</h1>
         `;
     });
