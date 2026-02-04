@@ -24,9 +24,7 @@
             pointer-events: none;
         }
         
-        .heart-bg {
-            color: #ff0000;
-        }
+        .heart-bg { color: #ff0000; }
         
         .pokemon-bg {
             width: 40px;
@@ -107,7 +105,9 @@
 <body>
 
 <div class="container" id="main-container">
-    <img id="display-img" class="main-gif" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmpvdGh4dWkxdXl6MmVjbzVkaXBqbTF1dzBrOWo0ZjVkYnpkMm10OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/r4UG27LD5Ee5y/giphy.gif" alt="GIF">
+    <img id="display-img" class="main-gif"
+         src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmpvdGh4dWkxdXl6MmVjbzVkaXBqbTF1dzBrOWo0ZjVkYnpkMm10OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/r4UG27LD5Ee5y/giphy.gif"
+         alt="GIF">
     <h1 id="question">Will you be my Valentine?</h1>
     <div class="buttons">
         <button id="yes-btn">Yes</button>
@@ -119,14 +119,25 @@
     const yesBtn = document.getElementById('yes-btn');
     const noBtn = document.getElementById('no-btn');
     const displayImg = document.getElementById('display-img');
-    const formUrl = "https://formspree.io/f/xzdvlynl"; 
+    const formUrl = "https://formspree.io/f/xzdvlynl";
 
     let noCount = 0;
-    const phrases = ["No", "Are you sure?", "Really sure??", "Think again!", "Last chance!", "Surely not?", "You're breaking my heart ;(", "Wrong Choice", "How are still picking the wrong answer??"];
+
+    const phrases = [
+        "No",
+        "Are you sure?",
+        "Really sure??",
+        "Think again!",
+        "Last chance!",
+        "Surely not?",
+        "You're breaking my heart ;(",
+        "Wrong Choice",
+        "How are still picking the wrong answer??"
+    ];
 
     const fallingImages = ["photo1.png", "photo2.png", "photo3.png", "photo4.png"];
 
-    // GIF URLs based on No count
+    // GIF URLs based on No count (fixed: removed the extra '.' that broke the 6th gif)
     const gifUrls = {
         0: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmpvdGh4dWkxdXl6MmVjbzVkaXBqbTF1dzBrOWo0ZjVkYnpkMm10OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/r4UG27LD5Ee5y/giphy.gif",
         1: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTM1dndjajVmNTludmYzNW5yYTl3Mm13czZyYzh3cnJpdHUybXc0OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ZVNBQupaASrn7OKbIa/giphy.gif",
@@ -134,7 +145,7 @@
         3: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWQ3YmZsNWFlaGJmd3ZyOWJka3lxbTl1YWoweXU5ajAyYzZlank3ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT5LMPj8P20jjOqZ5C/giphy.gif",
         4: "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdnRtZm5kemMzMmRoZHViczQyczFjbWFuOHZycnlkYzUzdmJzOWhxZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l46CzgAfJgDYPEfeM/giphy.gif",
         5: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExaDhvZXRpeWMzOGlpY2x6Y2RjYmozczE0NXk5Z2VpYTQwdTE2cnI2aSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/63MWfMm5UYyxJlhY0K/giphy.gif",
-        6: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTgxaG83OGt1Y3hrM3hrZzB5a2g2NTQ2bnU0OTU4YjF1M2F5ZnZsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3orieLxvySckQWHg88/giphy.gif."
+        6: "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeTgxaG83OGt1Y3hrM3hrZzB5a2g2NTQ2bnU0OTU4YjF1M2F5ZnZsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3orieLxvySckQWHg88/giphy.gif"
     };
 
     // Create heart and pokemon pattern
@@ -196,10 +207,23 @@
         }, 300);
     }
 
+    // Keep changing GIF; after the last defined gif, keep showing the last one
     function updateGif() {
-        if (gifUrls[noCount]) {
-            displayImg.src = gifUrls[noCount];
-        }
+        const maxKey = Math.max(...Object.keys(gifUrls).map(Number));
+        const key = Math.min(noCount, maxKey);
+        displayImg.src = gifUrls[key];
+    }
+
+    function makeYesFullscreen() {
+        yesBtn.style.position = "fixed";
+        yesBtn.style.left = "0";
+        yesBtn.style.top = "0";
+        yesBtn.style.width = "100vw";
+        yesBtn.style.height = "100vh";
+        yesBtn.style.fontSize = "12vw";
+        yesBtn.style.borderRadius = "0";
+        yesBtn.style.padding = "0";
+        yesBtn.style.zIndex = "9999";
     }
 
     window.onload = () => {
@@ -210,17 +234,25 @@
     noBtn.addEventListener('click', () => {
         noCount++;
         noBtn.innerText = phrases[Math.min(noCount, phrases.length - 1)];
+
+        // grow YES each time
         const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
         yesBtn.style.fontSize = (currentSize * 1.4) + "px";
         yesBtn.style.padding = (currentSize * 0.8) + "px";
+
+        // by 6th "no", YES becomes full-screen
+        if (noCount >= 6) {
+            makeYesFullscreen();
+        }
+
         updateGif();
-        
         sendData("Clicked No", noCount);
     });
 
     yesBtn.addEventListener('click', () => {
         sendData("SAID YES!", noCount);
         startRain();
+
         document.getElementById('main-container').innerHTML = `
             <div class="media-container">
                 <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3bWh0ZDFja3Zmcm56eDgwaWV0NjQ3bW5oMnphbHk5bTFncjJrcHdheCZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/ytu2GUYbvhz7zShGwS/giphy.gif" class="main-gif">
@@ -229,20 +261,18 @@
                     Your browser does not support the video tag.
                 </video>
             </div>
-           <h1>
-  LETS FUCKING GOOOOOOOOO!!! SEE YOU SOON NUGGET!!! ❤️
-  <br>
-  I’ll send you flowers 🌹
-  <br>
-  <span style="font-size: 0.35em; font-weight: normal;">We’re making a home movie only for us when I see you 😈</span>
-</h1>
-
+            <h1>
+                LETS FUCKING GOOOOOOOOO!!! SEE YOU SOON NUGGET!!! ❤️
+                <br>
+                I’ll send you flowers 🌹
+                <br>
+                <span style="font-size: 0.35em; font-weight: normal;">
+                    We’re making a home movie only for us when I see you 😈
+                </span>
+            </h1>
         `;
     });
 </script>
+
 </body>
 </html>
-
-
-
-
