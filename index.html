@@ -11,18 +11,80 @@
             align-items: center; 
             height: 100vh; 
             margin: 0; 
-            background-color: #ffe4e1; 
+            background-color: #ff69b4;
             font-family: 'Arial', sans-serif; 
-            overflow: hidden; /* Keeps photos from creating scrollbars */
+            overflow: hidden;
         }
-        .container { text-align: center; padding: 20px; position: relative; z-index: 10; }
-        img.main-gif { width: 250px; border-radius: 15px; margin-bottom: 20px; }
-        .buttons { display: flex; justify-content: center; align-items: center; gap: 15px; }
-        button { border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; font-weight: bold; }
-        #yes-btn { background-color: #4CAF50; color: white; padding: 15px 30px; font-size: 18px; }
-        #no-btn { background-color: #f44336; color: white; padding: 10px 20px; font-size: 16px; }
+        
+        .heart-bg, .pokemon-bg {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.3;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .heart-bg {
+            color: #ff0000;
+        }
+        
+        .pokemon-bg {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+        
+        .container { 
+            text-align: center; 
+            padding: 20px; 
+            position: relative; 
+            z-index: 10; 
+        }
+        
+        img.main-gif { 
+            width: 250px; 
+            border-radius: 15px; 
+            margin-bottom: 20px; 
+        }
+        
+        video.main-video {
+            width: 250px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .buttons { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 15px; 
+            position: relative; 
+        }
+        
+        button { 
+            border: none; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            font-weight: bold; 
+        }
+        
+        #yes-btn { 
+            background-color: #4CAF50; 
+            color: white; 
+            padding: 15px 30px; 
+            font-size: 18px; 
+        }
+        
+        #no-btn { 
+            background-color: #f44336; 
+            color: white; 
+            padding: 10px 20px; 
+            font-size: 16px;
+            position: absolute;
+            transition: all 0.3s ease;
+        }
 
-        /* The falling animation for your photos */
         .falling-photo {
             position: absolute;
             top: -150px;
@@ -41,7 +103,7 @@
 <body>
 
 <div class="container" id="main-container">
-    <img id="display-img" class="main-gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueG56Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6Znd6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/vO8F4fYK3veKw/giphy.gif" alt="Minion">
+    <img id="display-img" class="main-gif" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmpvdGh4dWkxdXl6MmVjbzVkaXBqbTF1dzBrOWo0ZjVkYnpkMm10OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/r4UG27LD5Ee5y/giphy.gif" alt="Starting GIF">
     <h1 id="question">Will you be my Valentine?</h1>
     <div class="buttons">
         <button id="yes-btn">Yes</button>
@@ -52,35 +114,107 @@
 <script>
     const yesBtn = document.getElementById('yes-btn');
     const noBtn = document.getElementById('no-btn');
+    const displayImg = document.getElementById('display-img');
     const formUrl = "https://formspree.io/f/xzdvlynl"; 
 
     let noCount = 0;
     const phrases = ["No", "Are you sure?", "Really sure??", "Think again!", "Last chance!", "Surely not?", "You're breaking my heart ;(", "Wrong Choice", "How are still picking the wrong answer??"];
 
-    // This matches the exact names in your GitHub folder
     const fallingImages = ["photo1.png", "photo2.png", "photo3.png", "photo4.png"];
 
-    async function sendData(status) {
-        await fetch(formUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ event: status, attempts: noCount })
-        });
+    // GIF URLs based on No count
+    const gifUrls = {
+        0: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmpvdGh4dWkxdXl6MmVjbzVkaXBqbTF1dzBrOWo0ZjVkYnpkMm10OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/r4UG27LD5Ee5y/giphy.gif", // Initial
+        1: "https://tenor.com/SPlz4CFm28.gif", // After 1st No
+        4: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWQ3YmZsNWFlaGJmd3ZyOWJka3lxbTl1YWoweXU5ajAyYzZlank3ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT5LMPj8P20jjOqZ5C/giphy.gif" // After 4th No
+    };
+
+    // Create heart and pokemon pattern
+    function createHeartPattern() {
+        const spacing = 80;
+        const heartsX = Math.ceil(window.innerWidth / spacing);
+        const heartsY = Math.ceil(window.innerHeight / spacing);
+        
+        for (let y = 0; y < heartsY; y++) {
+            for (let x = 0; x < heartsX; x++) {
+                const isPokemon = Math.random() < 0.33;
+                
+                if (isPokemon) {
+                    const pokemon = document.createElement('img');
+                    pokemon.className = 'pokemon-bg';
+                    pokemon.src = 'pokemon.png';
+                    pokemon.style.left = (x * spacing + 10) + 'px';
+                    pokemon.style.top = (y * spacing + 10) + 'px';
+                    document.body.appendChild(pokemon);
+                } else {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-bg';
+                    heart.innerHTML = '❤';
+                    heart.style.left = (x * spacing + 20) + 'px';
+                    heart.style.top = (y * spacing + 20) + 'px';
+                    document.body.appendChild(heart);
+                }
+            }
+        }
+    }
+
+    async function sendData(event, noAttempts = 0) {
+        try {
+            await fetch(formUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    event: event,
+                    no_count: noAttempts,
+                    timestamp: new Date().toISOString()
+                })
+            });
+            console.log('Sent:', event, 'No count:', noAttempts);
+        } catch (error) {
+            console.log('Form submission error:', error);
+        }
     }
 
     function startRain() {
         setInterval(() => {
             const photo = document.createElement('img');
-            photo.src = fallingImages[Math.floor(Math.random() * fallingImages.length)];
+            const randomImage = fallingImages[Math.floor(Math.random() * fallingImages.length)];
+            photo.src = randomImage;
             photo.classList.add('falling-photo');
             photo.style.left = Math.random() * 100 + "vw";
             photo.style.animationDuration = (Math.random() * 2 + 3) + "s"; 
+            
             document.body.appendChild(photo);
             setTimeout(() => { photo.remove(); }, 5000);
         }, 300);
     }
 
-    window.onload = () => sendData("Page Opened");
+    function moveNoButton() {
+        const maxX = window.innerWidth - noBtn.offsetWidth - 40;
+        const maxY = window.innerHeight - noBtn.offsetHeight - 40;
+        
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+        
+        noBtn.style.left = randomX + 'px';
+        noBtn.style.top = randomY + 'px';
+    }
+
+    function updateGif() {
+        // Check if there's a specific GIF for this count
+        if (gifUrls[noCount]) {
+            displayImg.src = gifUrls[noCount];
+        }
+    }
+
+    window.onload = () => {
+        createHeartPattern();
+        sendData("Page Opened", 0);
+    };
+
+    noBtn.addEventListener('mouseenter', () => {
+        moveNoButton();
+    });
 
     noBtn.addEventListener('click', () => {
         noCount++;
@@ -88,14 +222,22 @@
         const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
         yesBtn.style.fontSize = (currentSize * 1.4) + "px";
         yesBtn.style.padding = (currentSize * 0.8) + "px";
+        moveNoButton();
+        updateGif(); // Update the GIF based on No count
+        
+        sendData("Clicked No", noCount);
     });
 
     yesBtn.addEventListener('click', () => {
-        sendData("SAID YES!");
-        startRain(); // This starts the photo rain!
+        sendData("SAID YES!", noCount);
+        startRain();
         document.getElementById('main-container').innerHTML = `
-            <img src="https://media.giphy.com/media/l41lTfuxV5R7g6yT6/giphy.gif" class="main-gif">
+            <img src="https://media.giphy.com/media/v1.Y2lkPWVjZjA1ZTQ3bWh0ZDFja3Zmcm56eDgwaWV0NjQ3bW5oMnphbHk5bTFncjJrcHdheCZlcD12MV9naWZzX3RyZW5kaW5nJmN0PWc/ytu2GUYbvhz7zShGwS/giphy.gif" class="main-gif">
             <h1>YAYYY!!! See you then! ❤️</h1>
+            <video class="main-video" autoplay loop muted playsinline>
+                <source src="fish.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
         `;
     });
 </script>
