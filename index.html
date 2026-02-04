@@ -107,7 +107,7 @@
 <body>
 
 <div class="container" id="main-container">
-    <img id="display-img" class="main-gif" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmpvdGh4dWkxdXl6MmVjbzVkaXBqbTF1dzBrOWo0ZjVkYnpkMm10OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/r4UG27LD5Ee5y/giphy.gif" alt="Starting GIF">
+    <img id="display-img" class="main-gif" src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmpvdGh4dWkxdXl6MmVjbzVkaXBqbTF1dzBrOWo0ZjVkYnpkMm10OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/r4UG27LD5Ee5y/giphy.gif" alt="GIF">
     <h1 id="question">Will you be my Valentine?</h1>
     <div class="buttons">
         <button id="yes-btn">Yes</button>
@@ -128,9 +128,9 @@
 
     // GIF URLs based on No count
     const gifUrls = {
-        0: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmpvdGh4dWkxdXl6MmVjbzVkaXBqbTF1dzBrOWo0ZjVkYnpkMm10OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/r4UG27LD5Ee5y/giphy.gif", // Initial
-        1: "https://media.tenor.com/SPlz4CFm28AAAAACw/baby-yoda.gif", // After 1st No - Fixed Tenor URL
-        4: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWQ3YmZsNWFlaGJmd3ZyOWJka3lxbTl1YWoweXU5ajAyYzZlank3ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT5LMPj8P20jjOqZ5C/giphy.gif" // After 4th No
+        0: "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbmpvdGh4dWkxdXl6MmVjbzVkaXBqbTF1dzBrOWo0ZjVkYnpkMm10OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/r4UG27LD5Ee5y/giphy.gif",
+        1: "https://media.giphy.com/media/dZ0yRjxBulRjW/giphy.gif", // Baby Yoda from Giphy instead
+        4: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdWQ3YmZsNWFlaGJmd3ZyOWJka3lxbTl1YWoweXU5ajAyYzZlank3ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT5LMPj8P20jjOqZ5C/giphy.gif"
     };
 
     // Create heart and pokemon pattern
@@ -173,9 +173,8 @@
                     timestamp: new Date().toISOString()
                 })
             });
-            console.log('Sent:', event, 'No count:', noAttempts);
         } catch (error) {
-            console.log('Form submission error:', error);
+            // Silent error handling
         }
     }
 
@@ -194,7 +193,6 @@
     }
 
     function updateGif() {
-        // Check if there's a specific GIF for this count
         if (gifUrls[noCount]) {
             displayImg.src = gifUrls[noCount];
         }
@@ -227,22 +225,9 @@
                     Your browser does not support the video tag.
                 </video>
             </div>
-            <h1>LET'S FUCKING GOOO!!! SEE YOU SOON!!!! ❤️</h1>
+            <h1>LETS FUCKING GOOOOOOOOO!!! SEE YOU SOON NUGGET!!! ❤️</h1>
         `;
     });
 </script>
 </body>
 </html>
-```
-
-## What I fixed:
-
-Changed the Tenor URL from:
-```
-https://tenor.com/SPlz4CFm28.gif
-```
-
-To the actual media URL:
-```
-https://media.tenor.com/SPlz4CFm28AAAAACw/baby-yoda.gif
-
